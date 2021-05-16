@@ -15,10 +15,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - argocd.kluster.ptych.net
+    - argocd.<yourname>.dopl.uk
     secretName: argocd-secret # do not change, this is provided by Argo CD
   rules:
-  - host: argocd.kluster.ptych.net
+  - host: argocd.<yourname>.dopl.uk
     http:
       paths:
       - path: /
