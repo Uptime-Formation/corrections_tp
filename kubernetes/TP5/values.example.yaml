@@ -2,7 +2,7 @@ wordpressUsername: elie # replace
 wordpressPassword: myunsecurepassword
 wordpressBlogName: Kubernetes example blog
 
-replicaCount: 3
+replicaCount: 1
 
 service:
   type: ClusterIP

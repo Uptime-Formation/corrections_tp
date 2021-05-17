@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: wordpress-chart
+  name: wordpress
   namespace: argocd 
 spec:
   destination:
@@ -11,14 +11,14 @@ spec:
   source:
     repoURL: https://charts.bitnami.com/bitnami
     chart: wordpress
-    targetRevision: 5.7.2
+    targetRevision: 11.0.5
     helm:
       values: |
         wordpressUsername: elie
         wordpressPassword: myunsecurepassword
         wordpressBlogName: Kubernetes example blog
 
-        replicaCount: 3
+        replicaCount: 1
 
         service:
           type: ClusterIP
