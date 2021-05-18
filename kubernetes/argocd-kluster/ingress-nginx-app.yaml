@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+  namespace: argocd
+spec:
+  destination:
+    namespace: kube-system
+    server: https://kubernetes.default.svc
+  project: kluster-base
+  source:
+    path: kubernetes/argocd-kluster/ingress-nginx
+    repoURL: https://github.com/Uptime-Formation/corrections_tp.git
+    targetRevision: HEAD
+
