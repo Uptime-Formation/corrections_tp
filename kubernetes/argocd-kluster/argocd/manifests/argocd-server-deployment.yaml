@@ -35,6 +35,8 @@ spec:
         - argocd-server
         - --staticassets
         - /shared/app
+        # https://github.com/argoproj/argo-cd/issues/2953
+        - --insecure
         image: quay.io/argoproj/argocd:v2.0.1
         imagePullPolicy: Always
         livenessProbe:
