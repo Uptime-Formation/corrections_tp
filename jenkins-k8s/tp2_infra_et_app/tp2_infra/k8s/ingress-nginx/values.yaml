@@ -1,0 +1,3 @@
+controller:
+  extraArgs:
+    enable-ssl-passthrough: '' # --enable-ssl-passthrough aux arguments du conteneur controller

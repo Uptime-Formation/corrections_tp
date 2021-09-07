@@ -1,0 +1,20 @@
+Vagrant.configure('2') do |config|
+  config.ssh.insert_key = false
+  # si le montage du dossier partagé ne fonctionne pas décommentez la ligne suivante
+  # config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.provider :virtualbox do |v|
+    v.memory = 8192
+    v.cpus = 4
+  end
+
+  config.vm.define :master do |master|
+    master.vm.box = 'ubuntu/focal64'
+    master.vm.hostname = 'master'
+    master.vm.network :private_network, ip: '10.12.0.10'
+    master.vm.provision :shell, privileged: false, inline: <<~SHELL
+      sudo rm /etc/resolv.conf && echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf && sudo chattr +i /etc/resolv.conf # fixed resolv.conf to avoid DNS bugs
+      curl -sfL https://get.k3s.io | sh -s - --disable=traefik --node-name=vagrant-k3s
+      sudo cp /etc/rancher/k3s/k3s.yaml /vagrant/k3s.yaml
+    SHELL
+  end
+end
