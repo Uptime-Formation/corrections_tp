@@ -17,8 +17,8 @@ def test_render():
     assert result
     assert str(values['visits']) in result
     assert values['title'] in result
-
     assert str(values['visits']+1) not in result
+
 
 def test_hash_name():
     name = "Jacques"
@@ -27,9 +27,5 @@ def test_hash_name():
     result = hash_name(name, salt)
     result2 = hash_name(name, salt2)
 
-    print(len(result))
-    print(result)
-
     assert result
     assert result != result2
-    # assert result == 
