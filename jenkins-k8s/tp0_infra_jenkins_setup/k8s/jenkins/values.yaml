@@ -3,16 +3,16 @@ controller:
     enabled: true
     paths: []
     apiVersion: "networking.k8s.io/v1"
-    hostName: jenkins.v3s2.dopl.uk
+    hostName: jenkins.<votrenom>.vagrantk3s.dopl.uk
     tls:
       - hosts:
-        - jenkins.v3s2.dopl.uk
+        - jenkins.<votrenom>.vagrantk3s.dopl.uk
         secretName: jenkins-tls-cert
     annotations:
       kubernetes.io/ingress.class: "nginx"
       kubernetes.io/tls-acme: "true"
       cert-manager.io/cluster-issuer: acme-dns-issuer-prod
-  jenkinsAdminEmail: trucmuch@free.fr
+  jenkinsAdminEmail: trucmuche@bidule.fr
   installPlugins:
     - configuration-as-code:1.51
     - job-dsl:1.77
