@@ -4,10 +4,13 @@ kind: Kustomization
 bases:
 - ../../base
 
+resources:
+- monstericon-ingress.yaml
+
 patchesStrategicMerge:
 - dnmonster-deploy.yaml
 - monstericon-deploy.yaml
 - monstericon-svc.yaml
 
-namePrefix: dev-
-nameSuffix: "-001"
+# namePrefix: "beta-"
+# nameSuffix: "-001"

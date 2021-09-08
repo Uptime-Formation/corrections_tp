@@ -4,6 +4,9 @@ kind: Kustomization
 bases:
 - ../../base
 
+resources:
+- monstericon-ingress.yaml
+
 patchesStrategicMerge:
 - dnmonster-deploy.yaml
 - monstericon-deploy.yaml

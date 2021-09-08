@@ -9,4 +9,3 @@ resources:
 - redis-svc.yaml
 - monstericon-deploy.yaml
 - monstericon-svc.yaml
-- monstericon-ingress.yaml
