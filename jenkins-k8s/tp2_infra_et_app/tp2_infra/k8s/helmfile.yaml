@@ -29,10 +29,3 @@ releases:
   version: 3.5.16
   values:
   - jenkins/values.yaml
-
-- name: docker-registry
-  namespace: docker-registry
-  chart: twuni/docker-registry
-  version: 1.11.0
-  values:
-  - docker-registry/values.yaml
