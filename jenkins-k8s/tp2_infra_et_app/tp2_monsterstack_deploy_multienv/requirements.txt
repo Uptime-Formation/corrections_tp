@@ -1,6 +1,0 @@
-Flask
-uWSGI
-requests
-redis
-pytest
-docopt

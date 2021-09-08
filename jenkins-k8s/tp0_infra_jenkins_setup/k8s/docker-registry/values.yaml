@@ -1,9 +1,0 @@
-persistence:
-  enabled: true
-  size: 10Gi
-service:
-  port: 5000
-  type: ClusterIP
-replicaCount: 1
-secrets:
-  htpasswd: elie:$2y$05$IMYMv7lunFG.sIe/LCjreOK.cEwMsfMPYppHH4MVWWKJ1UQGROa5K
