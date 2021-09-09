@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: monstericon
-        image: registry.<votrenom>.vagrantk3s.dopl.uk/monstericon:beta
+        image: monstericon
         env:
         - name: CONTEXT
           value: DEV

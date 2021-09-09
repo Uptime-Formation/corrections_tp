@@ -12,5 +12,21 @@ patchesStrategicMerge:
 - monstericon-deploy.yaml
 - monstericon-svc.yaml
 
-# namePrefix: "beta-"
-# nameSuffix: "-001"
+images:
+- name: monstericon
+  newName: registry.<votrenom>.vagrantk3s.dopl.uk/monstericon
+  newTag: beta
+
+vars:
+- name: INGRESS_SUBDOMAIN
+  objref:
+    kind: ConfigMap
+    name: environment-variables
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.INGRESS_SUBDOMAIN
+
+configMapGenerator:
+- name: environment-variables
+  envs: [release.env]
+  behavior: create
