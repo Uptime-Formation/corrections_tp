@@ -4,10 +4,29 @@ kind: Kustomization
 bases:
 - ../../base
 
+resources:
+- monstericon-ingress.yaml
+
 patchesStrategicMerge:
 - dnmonster-deploy.yaml
 - monstericon-deploy.yaml
 - monstericon-svc.yaml
 
-namePrefix: dev-
-nameSuffix: "-001"
+images:
+- name: monstericon
+  newName: ${IMAGE}
+  newTag: ${IMAGE_TAG}
+
+vars:
+- name: INGRESS_SUBDOMAIN
+  objref:
+    kind: ConfigMap
+    name: environment-variables
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.INGRESS_SUBDOMAIN
+
+configMapGenerator:
+- name: environment-variables
+  envs: [release.env]
+  behavior: create
