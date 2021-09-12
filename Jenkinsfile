@@ -67,12 +67,12 @@ spec:
           // sh "kubectl get nodes"
           sh "env"
           sh "kubectl kustomize k8s/overlays/dev | envsubst | tee manifests.yaml"
-          sh "cat manifests.yaml"
-          // sh "kubectl -n jenkins rollout status ${env.APP_NAME}"
+          sh "kubectl apply -f g manifests.yaml"
+          sh "kubectl -n jenkins rollout status ${env.APP_NAME}"
         }
-        // container("python") {
-        //   sh "python src/tests/functionnal_tests.py "
-        // }
+        container("python") {
+          sh "python src/tests/functionnal_tests.py "
+        }
       } catch(e) {
           error "Failed functional tests"
       } finally {
@@ -81,17 +81,19 @@ spec:
         }
       }
     }
-    stage("release") {
-      node("docker") {
-        sh "sudo docker pull ${env.IMAGE}:${env.TAG_BETA}"
-        sh "sudo docker image tag ${env.IMAGE}:${env.TAG_BETA} ${env.IMAGE}:${env.TAG}"
-        sh "sudo docker image tag ${env.IMAGE}:${env.TAG_BETA} ${env.IMAGE}:latest"
-
-        sh "sudo docker login -u 'none' -p 'none' ${env.REGISTRY_ADDRESS}"
-
-        sh "sudo docker image push ${env.IMAGE}:${env.TAG}"
-        sh "sudo docker image push ${env.IMAGE}:latest"
-      }
-    }
   }
 }
+//     node("docker") {
+//       stage("release") {
+//         sh "sudo docker pull ${env.IMAGE}:${env.TAG_BETA}"
+//         sh "sudo docker image tag ${env.IMAGE}:${env.TAG_BETA} ${env.IMAGE}:${env.TAG}"
+//         sh "sudo docker image tag ${env.IMAGE}:${env.TAG_BETA} ${env.IMAGE}:latest"
+
+//         sh "sudo docker login -u 'none' -p 'none' ${env.REGISTRY_ADDRESS}"
+
+//         sh "sudo docker image push ${env.IMAGE}:${env.TAG}"
+//         sh "sudo docker image push ${env.IMAGE}:latest"
+//       }
+//     }
+//   }
+// }

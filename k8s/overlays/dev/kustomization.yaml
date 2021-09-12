@@ -15,7 +15,7 @@ patchesStrategicMerge:
 images:
 - name: monstericon
   newName: ${IMAGE}
-  newTag: ${IMAGE_TAG}
+  newTag: ${TAG_BETA}
 
 vars:
 - name: INGRESS_SUBDOMAIN
