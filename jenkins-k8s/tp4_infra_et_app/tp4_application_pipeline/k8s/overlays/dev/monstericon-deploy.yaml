@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monstericon
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: monstericon
+        image: monstericon
+        env:
+        - name: CONTEXT
+          value: DEV
+        ports:
+        - containerPort: 5000
+          name: monster-port
+        livenessProbe:
+          tcpSocket:
+            port: 5000
+          initialDelaySeconds: 1
+          periodSeconds: 5
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+            httpHeaders:
+            - name: Accept
+              value: application/json
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3

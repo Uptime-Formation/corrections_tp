@@ -1,0 +1,12 @@
+__pycache__
+.pytest_cache
+
+venv
+Dockerfile
+k8s
+jenkins
+
+Dockerfile
+docker-compose.yml
+skaffold.yaml
+

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monstericon
+spec:
+  replicas: 5
+  template:
+    spec:
+      containers:
+      - name: monstericon
+        image: registry.<votrenom>.vagrantk3s.dopl.uk/monstericon
+        env:
+        - name: CONTEXT
+          value: PROD
+        ports:
+        - containerPort: 9090
+          name: monster-port
+        livenessProbe:
+          tcpSocket:
+            port: 9090
+          initialDelaySeconds: 1
+          periodSeconds: 5
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 9090
+            httpHeaders:
+            - name: Accept
+              value: application/json
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3

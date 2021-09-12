@@ -1,0 +1,38 @@
+repositories:
+- name: ingress-nginx
+  url: https://kubernetes.github.io/ingress-nginx
+- name: jetstack
+  url: https://charts.jetstack.io
+- name: jenkins
+  url: https://charts.jenkins.io
+- name: twuni
+  url: https://helm.twun.io
+
+releases:
+- name: ingress-nginx
+  namespace: kube-system
+  chart: ingress-nginx/ingress-nginx
+  version: 4.0.1
+  values:
+  - ingress-nginx/values.yaml
+
+- name: cert-manager
+  namespace: cert-manager
+  chart: jetstack/cert-manager
+  version: 1.5.3
+  values:
+  - cert-manager/values.yaml
+
+- name: jenkins
+  namespace: jenkins
+  chart: jenkins/jenkins
+  version: 3.5.16
+  values:
+  - jenkins/values.yaml
+
+- name: docker-registry
+  namespace: docker-registry
+  chart: twuni/docker-registry
+  version: 1.11.0
+  values:
+  - docker-registry/values.yaml
