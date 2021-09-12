@@ -2,9 +2,13 @@ import java.text.SimpleDateFormat
 
 currentBuild.displayName = new SimpleDateFormat("yy.MM.dd").format(new Date())
 
+
+// ###############
+env.BASE_DOMAIN = "<votre domaine de base>" // e.g. myjenkinscluster.domain.eu
+// ###############
+
 env.REPO_ADDRESS = "https://github.com/Uptime-Formation/corrections_tp.git"
 env.REPO_BRANCH = "jenkins_application"
-env.BASE_DOMAIN = "v3s2.dopl.uk"
 env.REGISTRY_ADDRESS = "registry.${BASE_DOMAIN}"
 env.APP_ADDRESS_BETA = "monstericon-beta.${BASE_DOMAIN}"
 env.APP_ADDRESS_PROD = "monstericon.${BASE_DOMAIN}"
