@@ -1,12 +1,13 @@
 import java.text.SimpleDateFormat
 
-currentBuild.displayName = new SimpleDateFormat("yy.MM.dd").format(new Date()) + "-" + env.BUILD_NUMBER
+currentBuild.displayName = new SimpleDateFormat("yy.MM.dd").format(new Date())
 
 env.REPO_ADDRESS = "https://github.com/Uptime-Formation/corrections_tp.git"
 env.REPO_BRANCH = "jenkins_application"
 env.BASE_DOMAIN = "v3s2.dopl.uk"
 env.REGISTRY_ADDRESS = "registry.${BASE_DOMAIN}"
 env.APP_ADDRESS_BETA = "monstericon-beta.${BASE_DOMAIN}"
+env.APP_ADDRESS_PROD = "monstericon.${BASE_DOMAIN}"
 env.APP_NAME="monstericon"
 env.IMAGE = "${env.REGISTRY_ADDRESS}/${env.APP_NAME}"
 // env.ADDRESS = "go-demo-3-${env.BUILD_NUMBER}-${env.BRANCH_NAME}.acme.com"
@@ -14,10 +15,10 @@ env.IMAGE = "${env.REGISTRY_ADDRESS}/${env.APP_NAME}"
 env.TAG = "${currentBuild.displayName}"
 env.TAG_BETA = "${env.TAG}-${env.BRANCH_NAME}"
 
-// def nodelabel = "jenkins-k8sagent-${UUID.randomUUID().toString()}"
+def nodelabel = "jenkins-k8sagent-${UUID.randomUUID().toString()}"
 
 podTemplate(
-  // label: nodelabel,
+  label: nodelabel,
   namespace: "jenkins",
   serviceAccount: "jenkins",
   yaml: """
@@ -67,33 +68,63 @@ spec:
           // sh "kubectl get nodes"
           sh "env"
           sh "kubectl kustomize k8s/overlays/dev | envsubst | tee manifests.yaml"
-          sh "kubectl apply -f g manifests.yaml"
-          sh "kubectl -n jenkins rollout status ${env.APP_NAME}"
+          sh "kubectl apply -f manifests.yaml -n jenkins-dev-deploy"
+          sh "kubectl -n jenkins-dev-deploy rollout status deployment ${env.APP_NAME}"
         }
         container("python") {
-          sh "python src/tests/functionnal_tests.py "
+          sh 'echo "nameserver 1.1.1.1" | tee /etc/resolv.conf' // fuck DNS resolution screw with functionnal tests
+          sh "python src/tests/functionnal_tests.py http://${APP_ADDRESS_BETA}"
         }
       } catch(e) {
           error "Failed functional tests"
       } finally {
         container("kubectl") {
-          sh "kubectl get pods -n jenkins"
+          sh "kubectl delete -f manifests.yaml -n jenkins-dev-deploy" // uninstall test release
+        }
+      }
+    }
+
+    node("ssh-docker-agent") {
+      stage("release") {
+        sh "sudo docker pull ${env.IMAGE}:${env.TAG_BETA}"
+        sh "sudo docker pull ${env.IMAGE}:latest"
+
+        sh "sudo docker image tag ${env.IMAGE}:${env.TAG_BETA} ${env.IMAGE}:rollback"
+
+        sh "sudo docker image tag ${env.IMAGE}:${env.TAG_BETA} ${env.IMAGE}:${env.TAG}"
+        sh "sudo docker image tag ${env.IMAGE}:${env.TAG_BETA} ${env.IMAGE}:latest"
+
+        sh "sudo docker login -u 'none' -p 'none' ${env.REGISTRY_ADDRESS}"
+
+        sh "sudo docker image push ${env.IMAGE}:${env.TAG}"
+        sh "sudo docker image push ${env.IMAGE}:latest"
+        sh "sudo docker image push ${env.IMAGE}:rollback"
+      }
+    }
+
+    stage("Production deploy and tests") {
+      try {
+        container("kubectl") {
+          sh "env"
+          sh "kubectl kustomize k8s/overlays/prod | envsubst | tee manifests.yaml"
+          sh "kubectl apply -f manifests.yaml -n prod"
+          sh "kubectl -n prod rollout status deployment ${env.APP_NAME}"
+        }
+        container("python") {
+          sh 'echo "nameserver 1.1.1.1" | tee /etc/resolv.conf' // fuck DNS resolution that screw with functionnal tests
+          sh "python src/tests/functionnal_tests.py http://${APP_ADDRESS_BETA}"
+        }
+      } catch(e) {
+          // env.TAG = "rollback"
+          // sh "kubectl kustomize k8s/overlays/prod | envsubst | tee manifests.yaml"
+          // sh "kubectl apply -f manifests.yaml -n prod"
+          // sh "kubectl -n prod rollout status deployment ${env.APP_NAME}"
+          error "Failed production tests -> should rollback"
+      } finally { // clean images and useless releases etc
+        container("kubectl") {
+          // cleanup
         }
       }
     }
   }
 }
-//     node("docker") {
-//       stage("release") {
-//         sh "sudo docker pull ${env.IMAGE}:${env.TAG_BETA}"
-//         sh "sudo docker image tag ${env.IMAGE}:${env.TAG_BETA} ${env.IMAGE}:${env.TAG}"
-//         sh "sudo docker image tag ${env.IMAGE}:${env.TAG_BETA} ${env.IMAGE}:latest"
-
-//         sh "sudo docker login -u 'none' -p 'none' ${env.REGISTRY_ADDRESS}"
-
-//         sh "sudo docker image push ${env.IMAGE}:${env.TAG}"
-//         sh "sudo docker image push ${env.IMAGE}:latest"
-//       }
-//     }
-//   }
-// }

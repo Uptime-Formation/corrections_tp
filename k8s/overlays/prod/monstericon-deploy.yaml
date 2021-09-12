@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: monstericon
-        image: ${IMAGE}
+        image: ${IMAGE}:${TAG}
         env:
         - name: CONTEXT
           value: PROD
