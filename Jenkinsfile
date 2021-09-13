@@ -14,8 +14,6 @@ env.APP_ADDRESS_BETA = "monstericon-beta.${BASE_DOMAIN}"
 env.APP_ADDRESS_PROD = "monstericon.${BASE_DOMAIN}"
 env.APP_NAME="monstericon"
 env.IMAGE = "${env.REGISTRY_ADDRESS}/${env.APP_NAME}"
-// env.ADDRESS = "go-demo-3-${env.BUILD_NUMBER}-${env.BRANCH_NAME}.acme.com"
-// env.PROD_ADDRESS = "go-demo-3.acme.com"
 env.TAG = "${currentBuild.displayName}"
 env.TAG_BETA = "${env.TAG}-${env.BRANCH_NAME}"
 
@@ -53,7 +51,7 @@ spec:
         }
     }
 
-    node("ssh-docker-agent") {
+    node("docker-agent") {
       stage("build") {
         git url: "${env.REPO_ADDRESS}", branch: "${env.REPO_BRANCH}"
 
@@ -68,8 +66,6 @@ spec:
     stage("functionnal tests") {
       try {
         container("kubectl") {
-          // sh "kubectl create namespace beta"
-          // sh "kubectl get nodes"
           sh "env"
           sh "kubectl kustomize k8s/overlays/dev | envsubst | tee manifests.yaml"
           sh "kubectl apply -f manifests.yaml -n jenkins-dev-deploy"
