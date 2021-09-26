@@ -6,6 +6,6 @@ COPY ./app /app
 COPY boot.sh /
 RUN chmod a+x /boot.sh
 ENV CONTEXT PROD
-EXPOSE 9090 9191 5000
+EXPOSE 5000 9191
 USER uwsgi
 CMD ["/boot.sh"]

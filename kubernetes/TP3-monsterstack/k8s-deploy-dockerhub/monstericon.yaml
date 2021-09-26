@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: monstericon
-        image: tecpi/monster_icon:0.1
+        image: uptimeformation/identidock:latest
         ports:
         - containerPort: 5000
         livenessProbe:
