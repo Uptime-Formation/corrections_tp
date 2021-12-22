@@ -1,4 +1,4 @@
-from ..monster_icon import *
+from .monster_icon import *
 import redis
 
 
