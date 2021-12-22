@@ -41,11 +41,11 @@ build:
 
 deploy-dev:
   stage: deploy-dev
-  image: alpine:3.8
+  image: nekottyo/kustomize-kubeval:latest
   before_script:
-    - apk add --no-cache git curl bash
-    - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
-    - mv kustomize /usr/local/bin/
+    # - apk add --no-cache git curl bash
+    # - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+    # - mv kustomize /usr/local/bin/
     - git remote set-url origin https://${CI_USERNAME}:${CI_PUSH_TOKEN}@gitlab.com/e-lie/cicd_gitlab_argocd_corrections.git
     # - git remote set-url origin https://gitlab+deploy-token-704427:oGvgk3btvLG2oEnud6d_@gitlab.com/e-lie/cicd_gitlab_argocd_corrections.git
     - git config --global user.email "gitlab@gitlab.com"
@@ -62,11 +62,11 @@ deploy-dev:
 
 deploy-prod:
   stage: deploy-prod
-  image: alpine:3.8
+  image: nekottyo/kustomize-kubeval:latest
   before_script:
-    - apk add --no-cache git curl bash
-    - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
-    - mv kustomize /usr/local/bin/
+    # - apk add --no-cache git curl bash
+    # - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+    # - mv kustomize /usr/local/bin/
     - git remote set-url origin https://${CI_USERNAME}:${CI_PUSH_TOKEN}@gitlab.com/e-lie/cicd_gitlab_argocd_corrections.git
     - git config --global user.email "gitlab@gitlab.com"
     - git config --global user.name "GitLab CI/CD"
