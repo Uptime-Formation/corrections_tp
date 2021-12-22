@@ -6,7 +6,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: monsterstack.local
+  - host: monster.elie.docker.dopl.uk 
     http:
       paths:
         - path: /
