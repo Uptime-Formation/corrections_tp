@@ -9,4 +9,4 @@ resources:
 namespace: prod
 images:
 - name: registry.gitlab.com/e-lie/cicd_gitlab_argocd_corrections
-  newTag: c04bb1ab083d7bd3e5a8f8050a251068ebf434f9
+  newTag: 58228da6de4c27696259cd086854fb36f4d2f42e
