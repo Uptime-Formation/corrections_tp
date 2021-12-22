@@ -10,9 +10,19 @@
 # for the default branch and all other (MR) branches.
 
 stages:
+- unit-test
 - build
 - deploy-dev
 - deploy-prod
+
+unit-test:
+  image: python:3.9
+  stage: unit-test
+  script:
+    - pip install -r requirements.txt
+    - python tests.py --verbose
+  only:
+    - k8s_gitlab_argocd_correction # should be master on a normal repository
 
 build:
   # Use the official docker image.
