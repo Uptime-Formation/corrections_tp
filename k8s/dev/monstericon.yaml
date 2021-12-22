@@ -34,7 +34,8 @@ spec:
     spec:
       containers:
       - name: monstericon
-        image: monstericon
+        # image: monstericon
+        image: registry.gitlab.com/e-lie/cicd_gitlab_argocd_corrections:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
