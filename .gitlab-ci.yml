@@ -52,7 +52,7 @@ deploy-dev:
     - git config --global user.name "GitLab CI/CD"
   script:
     - git checkout -B k8s_gitlab_argocd_correction
-    - cd deployment/dev
+    - cd k8s/dev
     - kustomize edit set image $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - cat kustomization.yaml
     - git commit -am '[skip ci] DEV image update'
@@ -73,7 +73,7 @@ deploy-prod:
   script:
     - git checkout -B k8s_gitlab_argocd_correction
     - git pull origin k8s_gitlab_argocd_correction
-    - cd deployment/prod
+    - cd k8s/prod
     - kustomize edit set image $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - cat kustomization.yaml
     - git commit -am '[skip ci] PROD image update'
