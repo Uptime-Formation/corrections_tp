@@ -20,7 +20,8 @@ unit-test:
   stage: unit-test
   script:
     - pip install -r requirements.txt
-    - python app/tests/test_unit.py --verbose
+    - cd app
+    - python tests/test_unit.py --verbose
   only:
     - k8s_gitlab_argocd_correction # should be master on a normal repository
 
