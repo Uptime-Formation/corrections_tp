@@ -11,7 +11,7 @@ spec:
   tls:
   - hosts:
     - monster.elie.docker.dopl.uk
-    secretName: monster-tls-cert # do not change, this is provided by Argo CD
+    secretName: monster-tls-cert
   rules:
   - host: monster.elie.docker.dopl.uk 
     http:

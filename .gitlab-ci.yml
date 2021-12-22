@@ -25,7 +25,7 @@ build:
   # dependencies:
   #   - test  
   only:
-    - master
+    - k8s_gitlab_argocd_correction # should be master on a normal repository
   # Run this job in a branch where a Dockerfile exists
   # after_script:
   #   - git push https://gitlab-ci-token:<access_token>@gitlab.com/myuser/myrepo.git <branch_name>
@@ -41,8 +41,8 @@ deploy-dev:
     - apk add --no-cache git curl bash
     - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
     - mv kustomize /usr/local/bin/
-    - git remote set-url origin https://${CI_USERNAME}:${CI_PUSH_TOKEN}@gitlab.com/andrew.kaczynski/gitops-webapp.git
-    - git remote set-url origin https://gitlab+deploy-token-704427:oGvgk3btvLG2oEnud6d_@gitlab.com/e-lie/cicd_gitlab_argocd_corrections.git
+    - git remote set-url origin https://${CI_USERNAME}:${CI_PUSH_TOKEN}@gitlab.com/e-lie/cicd_gitlab_argocd_corrections.git
+    # - git remote set-url origin https://gitlab+deploy-token-704427:oGvgk3btvLG2oEnud6d_@gitlab.com/e-lie/cicd_gitlab_argocd_corrections.git
     - git config --global user.email "gitlab@gitlab.com"
     - git config --global user.name "GitLab CI/CD"
   script:
@@ -62,7 +62,7 @@ deploy-prod:
     - apk add --no-cache git curl bash
     - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
     - mv kustomize /usr/local/bin/
-    - git remote set-url origin https://${CI_USERNAME}:${CI_PUSH_TOKEN}@gitlab.com/andrew.kaczynski/gitops-webapp.git
+    - git remote set-url origin https://${CI_USERNAME}:${CI_PUSH_TOKEN}@gitlab.com/e-lie/cicd_gitlab_argocd_corrections.git
     - git config --global user.email "gitlab@gitlab.com"
     - git config --global user.name "GitLab CI/CD"
   script:

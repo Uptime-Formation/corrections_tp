@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   source: 
-    repoURL: https://gitlab.com/andrew.kaczynski/gitops-webapp.git
+    repoURL: https://gitlab+deploy-token-704427:oGvgk3btvLG2oEnud6d_@gitlab.com/e-lie/cicd_gitlab_argocd_corrections.git
     targetRevision: HEAD
     path: k8s/dev
   destination:
@@ -25,7 +25,7 @@ metadata:
 spec:
   project: default
   source: 
-    repoURL: https://gitlab.com/andrew.kaczynski/gitops-webapp.git
+    repoURL: https://gitlab+deploy-token-704427:oGvgk3btvLG2oEnud6d_@gitlab.com/e-lie/cicd_gitlab_argocd_corrections.git
     targetRevision: HEAD
     path: k8s/prod
   destination:
