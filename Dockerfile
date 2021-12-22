@@ -13,7 +13,7 @@ ADD . .
 RUN chown -R flask:flask ./
 
 # Make src and tests executable
-RUN chmod -R a+x src boot.sh
+RUN chmod -R a+x app boot.sh
 
 ENV CONTEXT PROD
 EXPOSE 9090 9191 5000
