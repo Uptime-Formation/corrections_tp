@@ -10,21 +10,7 @@ redis_cache = redis.StrictRedis(host='redis', port=6379, socket_connect_timeout=
 salt = "UNIQUE_SALT"
 default_name = 'John Doe'
 
-@app.route('/', methods=['GET', 'POST'])
-def mainpage():
-
-    try:
-        visits = redis_cache.incr("counter")
-    except redis.RedisError:
-        visits = "<i>cannot connect to Redis, counter disabled</i>"
-
-    name = default_name
-    if request.method == 'POST':
-        name = request.form['name']
-    salted_name = salt + name
-    name_hash = hashlib.sha256(salted_name.encode()).hexdigest()
-
-    page = '''
+page_template = '''
         <html>
           <head>
             <title>Monster Icon</title>
@@ -48,7 +34,36 @@ def mainpage():
           </ul></strong>
         </body>
        </html>
-    '''.format(name=name, name_hash=name_hash, hostname=socket.gethostname(), visits=visits)
+    '''
+
+def render(page_template, values):
+    return page_template.format(**values)
+    
+def redis_visits_counter(redis_cache):
+    try:
+        visits = redis_cache.incr("counter")
+    except redis.RedisError:
+        visits = "<i>cannot connect to Redis, counter disabled</i>"
+    return int(visits)
+
+def hash_name(name, salt):
+    salted_name = salt + name
+    name_hash = hashlib.sha256(salted_name.encode()).hexdigest()
+    return name_hash
+
+@app.route('/', methods=['GET', 'POST'])
+def mainpage():
+
+    name = request.form['name'] if request.method == 'POST' else default_name
+
+    values = {
+        'name': name,
+        'name_hash': hash_name(name, salt),
+        'visits': redis_visits_counter(redis_cache),
+        'hostname': socket.gethostname()
+    }
+    
+    page = render(page_template, values)
 
     return page
 
@@ -71,4 +86,3 @@ def healthz():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
-
