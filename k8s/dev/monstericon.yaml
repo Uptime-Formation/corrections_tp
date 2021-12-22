@@ -25,7 +25,7 @@ spec:
       partie: monstericon
   strategy:
     type: Recreate
-  replicas: 3
+  replicas: 2
   template:
     metadata:
       labels:
@@ -35,6 +35,7 @@ spec:
       containers:
       - name: monstericon
         image: monstericon
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         livenessProbe:

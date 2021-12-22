@@ -25,7 +25,7 @@ spec:
       partie: dnmonster
   strategy:
     type: Recreate
-  replicas: 5
+  replicas: 2
   template:
     metadata:
       labels:

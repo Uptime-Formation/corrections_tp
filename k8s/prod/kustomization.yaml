@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- namespace.yaml
+- deployment.yaml
+- ingress.yaml
+- service.yaml
+namespace: prod
+images:
+- name: registry.gitlab.com/e-lie/cicd_gitlab_argocd_corrections
+  newTag: bb26f865096103e87758991f4f1b91e3eed1fdae

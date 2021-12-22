@@ -25,7 +25,7 @@ spec:
       partie: monstericon
   strategy:
     type: Recreate
-  replicas: 3
+  replicas: 5
   template:
     metadata:
       labels:
@@ -35,7 +35,8 @@ spec:
       containers:
       - name: monstericon
         # image: <prod_image_from_gitlab_or_other_registry>
-        image: registry.gitlab.com/e-lie/cicd_gitlab_argocd_corrections:latest
+        # image: registry.gitlab.com/e-lie/cicd_gitlab_argocd_corrections:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         livenessProbe:

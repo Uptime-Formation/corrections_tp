@@ -9,7 +9,7 @@
 # This template uses one generic job with conditional builds
 # for the default branch and all other (MR) branches.
 
-docker-build:
+build:
   # Use the official docker image.
   image: docker:latest
   stage: build
@@ -20,18 +20,59 @@ docker-build:
   # Default branch leaves tag empty (= latest tag)
   # All other branches are tagged with the escaped branch name (commit ref slug)
   script:
-    - |
-      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
-        tag=""
-        echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
-      else
-        tag=":$CI_COMMIT_REF_SLUG"
-        echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
-      fi
-    - docker build --pull -t "$CI_REGISTRY_IMAGE${tag}" .
-    - docker push "$CI_REGISTRY_IMAGE${tag}"
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+  # dependencies:
+  #   - test  
+  only:
+    - master
   # Run this job in a branch where a Dockerfile exists
-  rules:
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - Dockerfile
+  # after_script:
+  #   - git push https://gitlab-ci-token:<access_token>@gitlab.com/myuser/myrepo.git <branch_name>
+  # rules:
+  #   - if: $CI_COMMIT_BRANCH
+  #     exists:
+  #       - Dockerfile
+
+deploy-dev:
+  stage: deploy-dev
+  image: alpine:3.8
+  before_script:
+    - apk add --no-cache git curl bash
+    - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+    - mv kustomize /usr/local/bin/
+    - git remote set-url origin https://${CI_USERNAME}:${CI_PUSH_TOKEN}@gitlab.com/andrew.kaczynski/gitops-webapp.git
+    - git remote set-url origin https://gitlab+deploy-token-704427:oGvgk3btvLG2oEnud6d_@gitlab.com/e-lie/cicd_gitlab_argocd_corrections.git
+    - git config --global user.email "gitlab@gitlab.com"
+    - git config --global user.name "GitLab CI/CD"
+  script:
+    - git checkout -B k8s_gitlab_argocd_correction
+    - cd deployment/dev
+    - kustomize edit set image $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - cat kustomization.yaml
+    - git commit -am '[skip ci] DEV image update'
+    - git push origin k8s_gitlab_argocd_correction
+  only:
+    - k8s_gitlab_argocd_correction
+
+deploy-prod:
+  stage: deploy-prod
+  image: alpine:3.8
+  before_script:
+    - apk add --no-cache git curl bash
+    - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+    - mv kustomize /usr/local/bin/
+    - git remote set-url origin https://${CI_USERNAME}:${CI_PUSH_TOKEN}@gitlab.com/andrew.kaczynski/gitops-webapp.git
+    - git config --global user.email "gitlab@gitlab.com"
+    - git config --global user.name "GitLab CI/CD"
+  script:
+    - git checkout -B k8s_gitlab_argocd_correction
+    - git pull origin k8s_gitlab_argocd_correction
+    - cd deployment/prod
+    - kustomize edit set image $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - cat kustomization.yaml
+    - git commit -am '[skip ci] PROD image update'
+    - git push origin k8s_gitlab_argocd_correction
+  only:
+    - k8s_gitlab_argocd_correction
+  when: manual
