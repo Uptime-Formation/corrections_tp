@@ -2,9 +2,14 @@
 apiVersion: skaffold/v1
 kind: Config
 build:
+  insecureRegistries:
+    - elie.k8s.dopl.uk:5555
   artifacts:
-  - image: monstericon
+  - image: elie.k8s.dopl.uk:5555/frontend
+  local:
+    push: true
+  
 deploy:
   kubectl:
     manifests:
-      - k8s-deploy-dev/*.yaml
+      - k8s-deploy/*.yaml

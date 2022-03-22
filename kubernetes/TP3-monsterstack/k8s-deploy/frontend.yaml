@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: monsterstack
+    partie: frontend
+spec:
+  ports:
+    - port: 5000
+  selector:
+    app: monsterstack
+    partie: frontend
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: monsterstack
+spec:
+  selector:
+    matchLabels:
+      app: monsterstack
+      partie: frontend
+  strategy:
+    type: Recreate
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: monsterstack
+        partie: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: elie.k8s.dopl.uk:5555/frontend
+          ports:
+            - containerPort: 5000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monster-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: monsterstack.local # à changer si envie/besoin
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 5000
