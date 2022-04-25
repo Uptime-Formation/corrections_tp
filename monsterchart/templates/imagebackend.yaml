@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: imagebackend
+  name: imagebackend-{{ include "monsterchart.fullname" . }}
   labels:
     app: monsterstack
 spec:
@@ -9,20 +9,20 @@ spec:
     - port: 8080
   selector:
     app: monsterstack 
-    partie: imagebackend
+    partie: imagebackend-{{ include "monsterchart.fullname" . }}
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: imagebackend 
+  name: imagebackend-{{ include "monsterchart.fullname" . }} 
   labels:
     app: monsterstack
 spec:
   selector:
     matchLabels:
       app: monsterstack
-      partie: imagebackend
+      partie: imagebackend-{{ include "monsterchart.fullname" . }}
   strategy:
     type: Recreate
   replicas: 5
@@ -30,10 +30,10 @@ spec:
     metadata:
       labels:
         app: monsterstack
-        partie: imagebackend
+        partie: imagebackend-{{ include "monsterchart.fullname" . }}
     spec:
       containers:
-      - image: amouat/dnmonster:1.0
+      - image: {{ .Values.imagebackend.image.name }}:{{ .Values.imagebackend.image.tag }}
         name: imagebackend
         ports:
         - containerPort: 8080

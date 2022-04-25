@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis
+  name: redis-{{ include "monsterchart.fullname" . }}
   labels:
     app: monsterstack
 spec:
@@ -9,20 +9,20 @@ spec:
     - port: 6379
   selector:
     app: monsterstack
-    partie: redis
+    partie: redis-{{ include "monsterchart.fullname" . }}
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis 
+  name: redis-{{ include "monsterchart.fullname" . }} 
   labels:
     app: monsterstack
 spec:
   selector:
     matchLabels:
       app: monsterstack
-      partie: redis
+      partie: redis-{{ include "monsterchart.fullname" . }}
   strategy:
     type: Recreate
   replicas: 1
@@ -30,10 +30,10 @@ spec:
     metadata:
       labels:
         app: monsterstack
-        partie: redis
+        partie: redis-{{ include "monsterchart.fullname" . }}
     spec:
       containers:
-      - image: redis:latest
+      - image: {{ .Values.redis.image.name }}:{{ .Values.redis.image.tag }}
         name: redis
         ports:
         - containerPort: 6379
