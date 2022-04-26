@@ -32,6 +32,8 @@ spec:
         app: monsterstack
         partie: frontend-{{ include "monsterchart.fullname" . }}
     spec:
+      imagePullSecrets:
+      - name: registry-credential
       containers:
       - name: frontend
         image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
