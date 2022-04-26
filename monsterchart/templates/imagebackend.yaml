@@ -33,7 +33,7 @@ spec:
         partie: imagebackend-{{ include "monsterchart.fullname" . }}
     spec:
       containers:
-      - image: {{ .Values.imagebackend.image.name }}:{{ .Values.imagebackend.image.tag }}
+      - image: "{{ .Values.imagebackend.image.repository }}:{{ .Values.imagebackend.image.tag }}"
         name: imagebackend
         ports:
         - containerPort: 8080

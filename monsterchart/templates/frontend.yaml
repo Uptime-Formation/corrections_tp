@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: {{ .Values.frontend.image.name }}:{{ .Values.frontend.image.tag }}
+        image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
         ports:
         - containerPort: 5000
         livenessProbe:
@@ -59,6 +59,16 @@ spec:
         env:
         - name: CONTEXT
           value: DEV
+        - name: IMAGEBACKEND_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: '{{ include "monsterchart.fullname" . }}'
+              key: IMAGEBACKEND_DOMAIN
+        - name: REDIS_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: '{{ include "monsterchart.fullname" . }}'
+              key: REDIS_DOMAIN
         resources:
           requests:
             cpu: "100m"

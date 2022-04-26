@@ -33,7 +33,7 @@ spec:
         partie: redis-{{ include "monsterchart.fullname" . }}
     spec:
       containers:
-      - image: {{ .Values.redis.image.name }}:{{ .Values.redis.image.tag }}
+      - image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
         name: redis
         ports:
         - containerPort: 6379

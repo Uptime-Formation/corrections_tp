@@ -1,17 +1,17 @@
 
 frontend:
   image:
-    name: tecpi/monstericon
+    repository: registry.kluster.ptych.net/frontend
     tag: latest
   service:
     port: 5000
 imagebackend:
   image:
-    name: amouat/dnmonster
+    repository: amouat/dnmonster
     tag: "1.0"
 redis:
   image:
-    name: redis
+    repository: redis
     tag: latest
 
 ingress:
