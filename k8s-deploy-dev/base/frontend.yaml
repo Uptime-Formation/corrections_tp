@@ -10,7 +10,7 @@ spec:
   selector:
     app: monsterstack
     partie: frontend
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -61,11 +61,26 @@ spec:
           failureThreshold: 3
         env:
         - name: CONTEXT
-          value: PROD
+          valueFrom:
+            configMapKeyRef:
+              # The ConfigMap containing the value you want to assign to VARIABLE
+              name: frontend-config
+              # Specify the key associated with the value
+              key: CONTEXT
         - name: REDIS_DOMAIN
-          value: redis
+          valueFrom:
+            configMapKeyRef:
+              # The ConfigMap containing the value you want to assign to VARIABLE
+              name: frontend-config
+              # Specify the key associated with the value
+              key: REDIS_DOMAIN
         - name: IMAGEBACKEND_DOMAIN
-          value: imagebackend
+          valueFrom:
+            configMapKeyRef:
+              # The ConfigMap containing the value you want to assign to VARIABLE
+              name: frontend-config
+              # Specify the key associated with the value
+              key: IMAGEBACKEND_DOMAIN
         resources:
           requests:
             cpu: "100m"
