@@ -61,11 +61,20 @@ spec:
           failureThreshold: 3
         env:
         - name: CONTEXT
-          value: PROD
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-config           # The ConfigMap this value comes from.
+              key: CONTEXT
         - name: REDIS_DOMAIN
-          value: redis
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-config
+              key: REDIS_DOMAIN
         - name: IMAGEBACKEND_DOMAIN
-          value: imagebackend
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-config
+              key: IMAGEBACKEND_DOMAIN
         resources:
           requests:
             cpu: "100m"
