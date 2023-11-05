@@ -1,6 +1,6 @@
 stages:
   - linting-unit-testing
-  - docker-build
+  - build
   - integration-testing
   - deploy
   - functionnal-testing
