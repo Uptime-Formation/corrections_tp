@@ -63,7 +63,7 @@ def mainpage():
 def get_identicon(name):
     found_in_cache = False
     try:
-        image = cache.get(name)
+        image = redis_cache.get(name)
         redis_unreachable = False
         if image is not None:
             found_in_cache = True
@@ -80,7 +80,7 @@ def get_identicon(name):
             logging.info("Image générée grâce au service dnmonster")
 
             if not redis_unreachable:
-                cache.set(name, image)
+                redis_cache.set(name, image)
                 logging.info("Image enregistrée dans le cache redis")
         except:
             logging.critical("Le service dnmonster est injoignable !")
