@@ -1,5 +1,5 @@
 stages:
-  - linting-unit-testing
+  - check
   - build
   - integration-testing
   - deploy
@@ -7,17 +7,20 @@ stages:
 
 linting:
   image: python:3.10-slim
-  stage: linting-unit-testing
+  stage: check
   script:
     - pip install pyflakes
     - pyflakes app/*
 
 unit-testing:
   image: python:3.10-slim
-  stage: linting-unit-testing
+  stage: check
   script:
-    - pip install pyflakes
-    - pyflakes app/*
+    # - bash app/launch-unittest.sh
+    - python -m virtualenv venv
+    - source venv/bin/activate
+    - pip install -r requirements.dev.txt
+    - python -m unittest tests/unit.py
 
 docker-build:
   # Use the official docker image.
