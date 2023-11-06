@@ -17,7 +17,7 @@ unit-testing:
   stage: check
   script:
     # - bash app/launch-unittest.sh
-    - python -m virtualenv venv
+    - python -m venv venv
     - source venv/bin/activate
     - pip install -r requirements.dev.txt
     - python -m unittest tests/unit.py
