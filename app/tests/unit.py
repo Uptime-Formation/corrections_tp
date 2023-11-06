@@ -11,4 +11,5 @@ class TestMainPage(flask_unittest.AppTestCase):
         with app.test_client() as client:
             result = client.get('/')
             self.assertTrue(b'<html>' in result.data)
+            self.assertTrue(b'cannot connect to Redis' in result.data)
             
