@@ -10,13 +10,15 @@ import os
 try:
     imagebackend_domain = os.environ['IMAGEBACKEND_DOMAIN']
     redis_domain = os.environ['REDIS_DOMAIN']
-    redis_cache = redis.StrictRedis(host=redis_domain, port=6379, socket_connect_timeout=2, socket_timeout=2, db=0)
 except Exception:
-    pass
+    redis_domain = "redis"
+    imagebackend_domain = "imagebackend"
+    
+salt = "UNIQUE_SALT"
+default_name = 'John Doe'
+app = Flask(__name__)
+redis_cache = redis.StrictRedis(host=redis_domain, port=6379, socket_connect_timeout=2, socket_timeout=2, db=0)
 
-    salt = "UNIQUE_SALT"
-    default_name = 'John Doe'
-    app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def mainpage():
@@ -25,8 +27,6 @@ def mainpage():
         visits = redis_cache.incr("counter")
     except redis.RedisError:
         visits = "<i>cannot connect to Redis, counter disabled</i>"
-    except Exception:
-        visits = "no Redis"
 
     name = default_name
     if request.method == 'POST':

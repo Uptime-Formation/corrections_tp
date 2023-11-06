@@ -1,20 +1,19 @@
 stages:
   - check
+  - build-dirty
+  - integration
   - build
-  - integration-testing
-  - deploy
-  - functionnal-testing
 
 linting:
-  image: python:3.10-slim
   stage: check
+  image: python:3.10-slim
   script:
     - pip install pyflakes
     - pyflakes app/*.py
 
 unit-testing:
-  image: python:3.10-slim
   stage: check
+  image: python:3.10-slim
   script:
     - cd app
     - python -m venv venv
@@ -22,10 +21,10 @@ unit-testing:
     - pip install -r requirements.dev.txt
     - python -m unittest tests/unit.py
 
-docker-build:
+docker-build-dirty:
+  stage: build-dirty
   # Use the official docker image.
   image: docker:cli
-  stage: build
   services:
     - docker:dind
   variables:
@@ -37,13 +36,30 @@ docker-build:
   script:
     - docker build --pull -t "$DOCKER_IMAGE_NAME" .
     - docker push "$DOCKER_IMAGE_NAME"
-    - |
-      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
-        docker tag "$DOCKER_IMAGE_NAME" "$CI_REGISTRY_IMAGE:latest"
-        docker push "$CI_REGISTRY_IMAGE:latest"
-      fi
   # Run this job in a branch where a Dockerfile exists
   rules:
     - if: $CI_COMMIT_BRANCH
       exists:
         - Dockerfile
+
+integration-testing:
+  stage: integration
+  image: python:3.10-slim
+  services:
+    - name: redis:latest
+      alias: redis
+    - name: amouat/dnmonster:1.0
+      alias: imagebackend
+  variables:
+    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  script:
+    - cd app
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install -r requirements.dev.txt
+    - python -m unittest tests/integration.py
+    # - |
+    #   if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+    #     docker tag "$DOCKER_IMAGE_NAME" "$CI_REGISTRY_IMAGE:latest"
+    #     docker push "$CI_REGISTRY_IMAGE:latest"
+    #   fi
