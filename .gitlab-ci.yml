@@ -10,13 +10,12 @@ linting:
   stage: check
   script:
     - pip install pyflakes
-    - pyflakes app/*
+    - pyflakes app/*.py
 
 unit-testing:
   image: python:3.10-slim
   stage: check
   script:
-    # - bash app/launch-unittest.sh
     - cd app
     - python -m venv venv
     - source venv/bin/activate
