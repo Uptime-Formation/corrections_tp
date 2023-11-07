@@ -1,8 +1,10 @@
 stages:
   - check
-  - build-dirty
-  - integration
-  - build
+  - build-integration
+  # - scan
+  - deploy
+  - functionnal
+  - deliver
 
 linting:
   stage: check
@@ -21,8 +23,8 @@ unit-testing:
     - pip install -r requirements.dev.txt
     - python -m unittest tests/unit.py
 
-docker-build-dirty:
-  stage: build-dirty
+docker-build:
+  stage: build-integration
   # Use the official docker image.
   image: docker:cli
   services:
@@ -31,10 +33,9 @@ docker-build-dirty:
     DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-  # All branches are tagged with $DOCKER_IMAGE_NAME (defaults to commit ref slug)
-  # Default branch is also tagged with `latest`
   script:
     - docker build --pull -t "$DOCKER_IMAGE_NAME" .
+    # All branches are tagged with $DOCKER_IMAGE_NAME (defaults to commit ref slug)
     - docker push "$DOCKER_IMAGE_NAME"
   # Run this job in a branch where a Dockerfile exists
   rules:
@@ -43,7 +44,7 @@ docker-build-dirty:
         - Dockerfile
 
 integration-testing:
-  stage: integration
+  stage: build-integration
   image: python:3.10-slim
   services:
     - name: redis:latest
@@ -58,8 +59,33 @@ integration-testing:
     - source venv/bin/activate
     - pip install -r requirements.dev.txt
     - python -m unittest tests/integration.py
-    # - |
-    #   if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
-    #     docker tag "$DOCKER_IMAGE_NAME" "$CI_REGISTRY_IMAGE:latest"
-    #     docker push "$CI_REGISTRY_IMAGE:latest"
-    #   fi
+
+# security-scan:
+#   stage: scan
+
+docker-deliver-staging:
+  stage: deliver-staging
+  # Use the official docker image.
+  image: docker:cli
+  services:
+    - docker:dind
+  variables:
+    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker tag "$DOCKER_IMAGE_NAME" 
+    - docker push "$DOCKER_IMAGE_NAME"
+  # Staging branch generates a `staging` image
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "staging" ]]; then
+        docker pull "$DOCKER_IMAGE_NAME"
+        docker tag "$DOCKER_IMAGE_NAME" "$CI_REGISTRY_IMAGE:staging"
+        docker push "$CI_REGISTRY_IMAGE:staging"
+      fi
+  # Run this job in a branch where a Dockerfile exists
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - Dockerfile
+
