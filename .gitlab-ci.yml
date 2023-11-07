@@ -1,7 +1,6 @@
 stages:
   - check
   - build-integration
-  # - scan
   - deploy
   - functionnal
   - deliver-staging
@@ -59,9 +58,6 @@ integration-testing:
     - source venv/bin/activate
     - pip install -r requirements.dev.txt
     - python -m unittest tests/integration.py
-
-# security-scan:
-#   stage: scan
 
 docker-deliver-staging:
   stage: deliver-staging
