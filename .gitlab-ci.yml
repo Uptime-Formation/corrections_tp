@@ -4,7 +4,7 @@ stages:
   # - scan
   - deploy
   - functionnal
-  - deliver
+  - deliver-staging
 
 linting:
   stage: check
