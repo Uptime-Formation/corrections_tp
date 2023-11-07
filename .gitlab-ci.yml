@@ -1,8 +1,6 @@
 stages:
   - check
   - build-integration
-  - deploy
-  - functionnal
   - deliver-staging
 
 linting:
