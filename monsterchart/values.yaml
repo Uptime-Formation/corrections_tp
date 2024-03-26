@@ -1,19 +1,18 @@
-
 frontend:
   image:
-    repository: registry.kluster.ptych.net/frontend
+    name: tecpi/frontend
     tag: latest
   service:
     port: 5000
+    type: NodePort
 imagebackend:
   image:
-    repository: amouat/dnmonster
+    name: amouat/dnmonster
     tag: "1.0"
 redis:
-  image:
-    repository: redis
-    tag: latest
-
+  enabled: true
+  auth:
+    enabled: false
 ingress:
   enabled: true
   className: ""
@@ -26,3 +25,6 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local

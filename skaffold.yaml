@@ -1,24 +1,14 @@
 apiVersion: skaffold/v2beta5
 kind: Config
 build:
-  artifacts:
-    - image: registry.kluster.ptych.net/frontend
+  artifacts: []
+    # - image: docker.io/<votre_login_dockerhub>/frontend
 deploy:
   helm:
     releases:
       - name: monsterchart
         chartPath: ./monsterchart
-        artifactOverrides:
-          imageKey: registry.kluster.ptych.net/frontend
+        # artifactOverrides:
+        #   imageKey: docker.io/<votre_login_dockerhub>/frontend
         imageStrategy:
           fqn: {}
-
-# Pour utiliser ce registry il faut avoir ajouté les credentials de connection au cluster avec la commande suivante:
-
-# kubectl create secret docker-registry registry-credential \
-#   --docker-server=registry.kluster.ptych.net \
-#   --docker-username=elie \
-#   --docker-password=<password-fournit-par-le-formateur> \
-#   --docker-email=test@fake.email
-
-# Pour reproduire ce TP hors formation vous pouvez utiliser un autre registry utiliser de cette façon d'autres credentials

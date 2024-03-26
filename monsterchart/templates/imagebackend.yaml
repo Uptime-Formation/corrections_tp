@@ -3,25 +3,25 @@ kind: Service
 metadata:
   name: imagebackend-{{ include "monsterchart.fullname" . }}
   labels:
-    app: monsterstack
+    app: monsterstack-{{ include "monsterchart.fullname" . }}
 spec:
   ports:
     - port: 8080
   selector:
-    app: monsterstack 
+    app: monsterstack-{{ include "monsterchart.fullname" . }}
     partie: imagebackend-{{ include "monsterchart.fullname" . }}
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: imagebackend-{{ include "monsterchart.fullname" . }} 
+  name: imagebackend-{{ include "monsterchart.fullname" . }}
   labels:
-    app: monsterstack
+    app: monsterstack-{{ include "monsterchart.fullname" . }}
 spec:
   selector:
     matchLabels:
-      app: monsterstack
+      app: monsterstack-{{ include "monsterchart.fullname" . }}
       partie: imagebackend-{{ include "monsterchart.fullname" . }}
   strategy:
     type: Recreate
@@ -29,11 +29,11 @@ spec:
   template:
     metadata:
       labels:
-        app: monsterstack
+        app: monsterstack-{{ include "monsterchart.fullname" . }}
         partie: imagebackend-{{ include "monsterchart.fullname" . }}
     spec:
       containers:
-      - image: "{{ .Values.imagebackend.image.repository }}:{{ .Values.imagebackend.image.tag }}"
+      - image: "{{ .Values.imagebackend.image.name }}:{{ .Values.imagebackend.image.tag }}"
         name: imagebackend
         ports:
         - containerPort: 8080

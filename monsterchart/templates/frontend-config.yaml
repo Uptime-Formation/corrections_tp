@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config-{{ include "monsterchart.fullname" . }}
+data:
+  CONTEXT: "DEV"
+  IMAGEBACKEND_DOMAIN: "imagebackend-{{ include "monsterchart.fullname" . }}"
+  REDIS_DOMAIN: "{{ include "monsterchart.fullname" . }}-redis-master"
